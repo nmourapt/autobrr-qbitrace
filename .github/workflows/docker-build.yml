@@ -12,8 +12,20 @@ jobs:
     - name: Login to GHCR
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+    - name: Get latest autobrr release version
+      id: get_release
+      run: |
+        latest_version=$(curl -s https://api.github.com/repos/autobrr/autobrr/releases/latest | jq -r .tag_name)
+        echo "latest_version=$latest_version" >> $GITHUB_ENV
+        
     - name: Build the Docker image
-      run: docker build . -t ghcr.io/${{ github.repository }}/autobrr-qbitrace:latest
+      run: docker build . -t ghcr.io/${{ github.repository }}/autobrr-qbitrace:${{ env.latest_version }}
 
     - name: Push to GHCR
-      run: docker push ghcr.io/${{ github.repository }}/autobrr-qbitrace:latest
+      run: docker push ghcr.io/${{ github.repository }}/autobrr-qbitrace:${{ env.latest_version }}
+
+    - name: Send Gotify Notification
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"A new Docker image has been pushed to GHCR for autobrr-qbitrace with version ${latest_version}.\"}" \
+        ${{ secrets.GOTIFY_WEBHOOK_URL }}

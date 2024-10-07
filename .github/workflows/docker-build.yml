@@ -1,3 +1,13 @@
+name: Build and Push Docker Image to GHCR
+
+on:
+  push:  # Triggers the workflow on push events to the main branch
+    branches:
+      - main
+  schedule:  # Optional: Schedule the job to run daily
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,7 +27,7 @@ jobs:
       run: |
         latest_version=$(curl -s https://api.github.com/repos/autobrr/autobrr/releases/latest | jq -r .tag_name)
         echo "latest_version=$latest_version" >> $GITHUB_ENV
-        
+
     - name: Build the Docker image
       run: docker build . -t ghcr.io/${{ github.repository }}/autobrr-qbitrace:${{ env.latest_version }}
 

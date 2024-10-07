@@ -30,14 +30,14 @@ jobs:
 
     - name: Build and Tag Docker Image
       run: |
-        # Build the image with version and latest tags, avoiding the repetition
-        docker build . -t ghcr.io/${{ github.repository }}/autobrr-qbitrace:${{ env.latest_version }} -t ghcr.io/${{ github.repository }}/autobrr-qbitrace:latest
+        # Build the image with version and latest tags
+        docker build . -t ghcr.io/${{ github.repository }}:${{ env.latest_version }} -t ghcr.io/${{ github.repository }}:latest
   
     - name: Push Version Tag
-      run: docker push ghcr.io/${{ github.repository }}/autobrr-qbitrace:${{ env.latest_version }}
+      run: docker push ghcr.io/${{ github.repository }}:${{ env.latest_version }}
   
     - name: Push Latest Tag
-      run: docker push ghcr.io/${{ github.repository }}/autobrr-qbitrace:latest
+      run: docker push ghcr.io/${{ github.repository }}:latest
   
     - name: Send Gotify Notification
       run: |

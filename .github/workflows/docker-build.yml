@@ -37,7 +37,6 @@ jobs:
     - name: Send Gotify Notification
       run: |
         curl -X POST \
-        -H 'Content-type: application/json' \
         -H "Waf-bypass: ${{ secrets.WAF_BYPASS }}" \
         -F "title=New Docker Image Pushed" \
         -F "message=A new Docker image for autobrr-qbitrace version ${latest_version} has been pushed to GHCR." \
